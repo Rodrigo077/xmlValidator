@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compra ativa="true">
+    <usuario>
+        <nome>Rodrigo Albuquerque</nome>
+        <dataCompra>05/07/2018</dataCompra>
+    </usuario>
+    <loja>
+        <nomeFantasia>Lojas pague menos</nomeFantasia>
+        <endereco>Rua das lojas 99</endereco>
+    </loja>
+</compra>
