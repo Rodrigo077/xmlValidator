@@ -82,33 +82,82 @@ class ValidarController extends Controller
         //
     }
 
-    public function validarXml($p1, $p2)
+    /**
+     * Method to request a validation
+     * @access public
+     * @param mixed xml
+     * @param mixed xsd
+     * @return array
+     */
+    public function xml(Request $request)
     {
-        //
-        echo $p1. '</br>';
-        echo $p2;
-
-//        if(file_exists("xml/validar.xml")){
-//
-//            exit('true');
-//        }else{
-//
-//            exit('false');
-//        }
-
-        echo file_get_contents("http://127.0.0.1:8000/xml/validar.xsd");
-        exit;
+        // Enable user error handling
+        libxml_use_internal_errors(true);
 
         $xml = new \DOMDocument();
 
-        $xml->load('xml/validar.xml');
+        $xml->load($request->input('xml'));
+        if (!$xml->schemaValidate($request->input('xsd'))) {
 
-        if (!$xml->schemaValidate('xml/validar.xsd')) {
+            return response()->json(self::libXmlDisplayErrors(), 400);
 
-            echo "invalid<p/>";
         } else {
 
-            echo "validated<p/>";
+            return response()->json(null, 200);
         }
+
     }
+
+    private function libXmlDisplayErrors()
+    {
+        $errorsArray = array();
+
+        $errors = libxml_get_errors();
+
+        foreach ($errors as $error) {
+
+            $errorsArray[] = self::libXmlDisplayError($error);
+
+        }
+
+        libxml_clear_errors();
+
+        return $errors;
+
+    }
+
+    private function libXmlDisplayError($error)
+    {
+        $return = "";
+
+        switch ($error->level) {
+            case LIBXML_ERR_WARNING:
+
+                $return .= "Warning $error->code: ";
+                break;
+            case LIBXML_ERR_ERROR:
+
+                $return .= "Error $error->code: ";
+                break;
+            case LIBXML_ERR_FATAL:
+
+                $return .= "Fatal Error $error->code: ";
+                break;
+        }
+
+        $return .= trim($error->message);
+
+        if ($error->file) {
+
+            $return .= " in $error->file";
+        }
+
+        $return .= " on line $error->line";
+
+        return $return;
+    }
+
+
+
+
 }

@@ -20,4 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('validar', 'ValidarController');
 
 //$api->post('profissional/salvar-agenda', '\App\Http\Controllers\Api\ProfissionalController@salvarAgenda');
-Route::get('validar/{p1}/{p2}', 'ValidarController@validarXml')->name('validar.xml');
+Route::post('validar/xml', 'ValidarController@xml')->name('validar.xml');
+
